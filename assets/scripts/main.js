@@ -162,7 +162,7 @@ async function getRecipes() {
   //     return JSON.parse(localStorage.getItem("recipes"));
   //   }
   // )
-  return JSON.parse(localStorage.getItem("recipes"));
+  return myPromise;
 };
 
 /**
