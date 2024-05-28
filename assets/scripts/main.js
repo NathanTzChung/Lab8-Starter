@@ -77,6 +77,7 @@ async function getRecipes() {
   //            function (we call these callback functions). That function will
   //            take two parameters - resolve, and reject. These are functions
   //            you can call to either resolve the Promise or Reject it.
+
   /**************************/
   // A4-A11 will all be *inside* the callback function we passed to the Promise
   // we're returning
@@ -100,7 +101,46 @@ async function getRecipes() {
   //            resolve() method.
   // A10. TODO - Log any errors from catch using console.error
   // A11. TODO - Pass any errors to the Promise's reject() function
-}
+
+  // A1
+  const recipesArr = JSON.parse(localStorage.getItem("recipes") || "[]");
+  // console.log(recipesArr);
+  if (recipesArr.length != 0){
+    return recipesArr;
+  }
+  // A2
+  const toReturnRecipesArr = [];
+  // console.log("this is return recipes" + toReturnRecipesArr);
+  // A3 - 11
+  let myPromise = new Promise(async function(resolve, reject) {
+
+    // A4
+    for (let i = 0; i < RECIPE_URLS.length; i++){
+      // A5
+      try {
+        // A6-9
+        const currURL = await fetch(RECIPE_URLS[i]);
+        const currURLJson = await currURL.json();
+        toReturnRecipesArr.push(currURLJson);
+        if (toReturnRecipesArr.length == RECIPE_URLS.length){
+          saveRecipesToStorage(toReturnRecipesArr);
+          resolve(toReturnRecipesArr);
+        }
+      } catch(err) {
+        // A10-11
+        console.error(err);
+        reject(err);
+      };
+    };
+  });
+  
+  // myPromise.then(
+  //   (result) => {
+  //     return JSON.parse(localStorage.getItem("recipes"));
+  //   }
+  // )
+  return JSON.parse(localStorage.getItem("recipes"));
+};
 
 /**
  * Takes in an array of recipes, converts it to a string, and then
